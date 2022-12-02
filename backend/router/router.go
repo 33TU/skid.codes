@@ -1,9 +1,11 @@
 package router
 
 import (
+	"backend/config"
 	h "backend/handler"
 	m "backend/middleware"
 	s "backend/services"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -58,7 +60,12 @@ func init() {
 	session.Post("/revoke", m.Validate[s.RevokeSessionBody](), h.RevokeSessionHandler)
 }
 
-// App returns the internal *fiber.App.
-func App() *fiber.App {
-	return app
+// Start starts listening for connections.
+func Start() {
+	addr, ok := config.Get("HTTP_ADDR")
+	if !ok {
+		log.Fatalln("HTTP_ADDR env not found.")
+	}
+
+	log.Fatalln(app.Listen(addr))
 }
