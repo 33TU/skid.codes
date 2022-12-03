@@ -44,6 +44,7 @@ func FindPasteHandler(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(fiber.Map{
 		"count":  count,
+		"offset": body.Offset,
 		"pastes": res,
 	})
 }
@@ -60,6 +61,7 @@ func FindUserPasteHandler(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(fiber.Map{
 		"count":  count,
+		"offset": body.Offset,
 		"pastes": res,
 	})
 }

@@ -31,8 +31,9 @@ func FindUserHandler(ctx *fiber.Ctx) error {
 
 	// Return json
 	return ctx.JSON(fiber.Map{
-		"count": count,
-		"users": res,
+		"count":  count,
+		"offset": body.Offset,
+		"users":  res,
 	})
 }
 

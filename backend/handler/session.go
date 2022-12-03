@@ -21,6 +21,7 @@ func FindSessionHandler(ctx *fiber.Ctx) error {
 	// Return json
 	return ctx.JSON(fiber.Map{
 		"count":    count,
+		"offset":   body.Offset,
 		"sessions": res,
 	})
 }

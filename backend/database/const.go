@@ -10,8 +10,6 @@ with user_find as (
 	  ((not $1 and u.username = $2) or 
 	   ($1 and u.email = $3)) and
 	  u.password  = crypt($4, u.password )
-	limit
-		1
 ), session_insert as (
 	insert into 
 	  users_sessions(user_id, addr, country)
