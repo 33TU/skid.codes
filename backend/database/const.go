@@ -202,7 +202,7 @@ select
 	up.private,
 	up.unlisted,
 	up.created,
-	substring(up.content_text, 0, 50) as content,
+	substring(up.content_text, 0, 30) || '...' as content,
 	to_jsonb(lt) as language, 
 	count(1) over() as count
 from
@@ -218,13 +218,14 @@ where
 		up.lang_name = $3::text or
 		up.title ilike $4::text or
 		up.password = $5::boolean or
-		up.content_text ilike $6::text or
-		up.created between coalesce($7::timestamp, to_timestamp(0)) and coalesce($8::timestamp, now())
+		up.content_text @@ websearch_to_tsquery('english', $6::text)
 	) 
-		and
+	and 
+	 	up.created between coalesce($7::timestamp, to_timestamp(0)) and coalesce($8::timestamp, to_timestamp(10000000000))
+	and
 	(
 		(not up.private or (up.user_id = $11::int and up.private = $9::boolean)) and
-		(not up.unlisted or (up.user_id = $11::int and up.private = $10::boolean))
+		(not up.unlisted or (up.user_id = $11::int and up.unlisted = $10::boolean))
 	)
 order by
 	up.created desc

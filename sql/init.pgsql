@@ -93,6 +93,7 @@ create index users_username_idx on users(username collate "C");
 create index users_pastes_lang_name_idx on users_pastes(lang_name collate "C");
 create index users_pastes_title_idx on users_pastes(title collate "C");
 create index users_pastes_content_text_idx on users_pastes(content_text collate "C");
+create index users_pastes_content_text_vector on users_pastes using gin (to_tsvector('english', content_text));
 
 -- Indexes for speeding up time based searches
 create index users_created_idx on users(created);

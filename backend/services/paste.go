@@ -140,10 +140,10 @@ func FindPaste(body *FindPasteBody, caller *int) (res []*FindPasteResult, count 
 	res, err = database.Select[FindPasteResult](
 		findPasteTimeout,
 		database.QueryPasteFind,
-		body.UserID, body.Username, body.Language, body.Title, body.Password, body.Content,
+		body.UserID, body.Username, body.Language, body.Title,
+		body.Password, body.Content,
 		body.CreatedBegin, body.CreatedEnd,
-		body.Private, body.Unlisted,
-		caller, // Caller user_id
+		body.Private, body.Unlisted, caller,
 		body.Offset, body.Count,
 	)
 
