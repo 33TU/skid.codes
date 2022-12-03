@@ -15,6 +15,7 @@ func Auth() fiber.Handler {
 		SigningKey:    secret.PublicKey(),
 		ContextKey:    "auth",
 		Claims:        &claims.AuthClaims{},
+		TokenLookup:   "header:Authorization",
 	})
 }
 

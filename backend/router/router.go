@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -15,17 +16,29 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+// Config
 var (
 	// HTTP addr and network
-	addr    string
-	network string
+	addr       string
+	network    string
+	trustProxy string
 
 	// Internal fiber.App
 	app *fiber.App
 )
 
-// init setup middlewares and routes.
-func init() {
+// Limiters
+var (
+	loginLimiter       = m.IPLimiter(10, time.Minute)
+	refreshLimiter     = m.RefreshLimiter(5, time.Minute)
+	userCreateLimiter  = m.IPLimiter(1, time.Minute*5)
+	pasteCreateLimiter = m.IPLimiter(10, time.Minute)
+	pasteFetchLimiter  = m.IPLimiter(30, time.Minute)
+	pasteFindLimiter   = m.IPLimiter(30, time.Minute)
+	userLimiter        = m.AuthLimiter(100, time.Minute)
+)
+
+func initConfig() {
 	var ok bool
 
 	addr, ok = config.Get("HTTP_ADDR")
@@ -38,9 +51,21 @@ func init() {
 		log.Fatalln("HTTP_NETWORK env not found.")
 	}
 
+	trustProxy, ok = config.Get("HTTP_TRUST_PROXY")
+	if !ok {
+		log.Fatalln("HTTP_TRUST_PROXY env not found.")
+	}
+}
+
+// init setup middlewares and routes.
+func init() {
+	// Init config
+	initConfig()
+
 	// Internal fiber app
 	app = fiber.New(fiber.Config{
-		Network: network,
+		Network:                 network,
+		EnableTrustedProxyCheck: trustProxy == "true",
 	})
 
 	// Middlewares
@@ -52,32 +77,32 @@ func init() {
 
 	// Auth
 	auth := api.Group("/auth")
-	auth.Post("/login", m.Validate[s.LoginBody](), h.LoginHandler)
+	auth.Post("/login", loginLimiter, m.Validate[s.LoginBody](), h.LoginHandler)
 	auth.Use(m.Refresh()) // Protected paths
-	auth.Get("/refresh", h.RefreshHandler)
+	auth.Get("/refresh", refreshLimiter, h.RefreshHandler)
 
 	// User
 	user := api.Group("/user")
 	user.Get("/:username", h.GetUserHandler)
-	user.Post("/create", m.Validate[s.CreateUserBody](), h.CreateUserHandler)
+	user.Post("/create", userCreateLimiter, m.Validate[s.CreateUserBody](), h.CreateUserHandler)
 	user.Post("/find", m.Validate[s.FindUserBody](), h.FindUserHandler)
-	user.Use(m.Auth()) // Protected paths
+	user.Use(m.Auth(), userLimiter) // Protected paths
 	user.Post("/update", m.Validate[s.UpdateUserBody](), h.UpdateUserHandler)
 
 	// Paste
 	paste := api.Group("/paste")
-	paste.Post("/fetch", m.Validate[s.FetchPasteBody](), h.FetchPasteHandler)
-	paste.Post("/find", m.Validate[s.FindPasteBody](), h.FindPasteHandler)
-	paste.Use(m.Auth()) // Protected paths
+	paste.Post("/fetch", pasteFetchLimiter, m.Validate[s.FetchPasteBody](), h.FetchPasteHandler)
+	paste.Post("/find", pasteFindLimiter, m.Validate[s.FindPasteBody](), h.FindPasteHandler)
+	paste.Use(m.Auth(), userLimiter) // Protected paths
 	paste.Post("/ufetch", m.Validate[s.FetchPasteBody](), h.FetchUserPasteHandler)
 	paste.Post("/ufind", m.Validate[s.FindPasteBody](), h.FindPasteHandler)
-	paste.Post("/create", m.Validate[s.CreatePasteBody](), h.CreatePasteHandler)
+	paste.Post("/create", pasteCreateLimiter, m.Validate[s.CreatePasteBody](), h.CreatePasteHandler)
 	paste.Post("/update", m.Validate[s.UpdatePasteBody](), h.UpdatePasteHandler)
 	paste.Post("/delete", m.Validate[s.DeletePasteBody](), h.DeletePasteHandler)
 
 	// Session
 	session := api.Group("/session")
-	session.Use(m.Auth()) // Protected paths
+	session.Use(m.Auth(), userLimiter) // Protected paths
 	session.Post("/find", m.Validate[s.FindSessionBody](), h.FindSessionHandler)
 	session.Post("/revoke", m.Validate[s.RevokeSessionBody](), h.RevokeSessionHandler)
 }
