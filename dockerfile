@@ -3,11 +3,9 @@ FROM clearlinux:base
 # Install depencies
 RUN swupd bundle-add go-basic
 
-# Add and switch user
-RUN useradd -m user
-#USER user
+# Copy backend to dest
+COPY backend/ /run/backend/
+WORKDIR /run/backend
 
 # Install go modules
-COPY backend/ /home/user/backend/
-WORKDIR /home/user/backend
 RUN go install
