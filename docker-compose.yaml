@@ -9,9 +9,7 @@ services:
       POSTGRES_PASSWORD: xcfN9xneAcjKKN5
       POSTGRES_DB: codes
     ports:
-      - "1337:1337"
-    expose:
-      - "1337"
+      - "5432:5432"
     restart: always
     volumes:
       - ./docker/database/data:/var/lib/postgresql/data
@@ -23,8 +21,6 @@ services:
       - "max_connections=200"
       - "-c"
       - "shared_buffers=2GB"
-      - "-p"
-      - "1337"
   backend:
     build: .
     volumes:
@@ -32,7 +28,7 @@ services:
       - ./docker/backend/unix.sock:/tmp/
       - ./backend:/run/backend/
     environment:
-      - DB_URL=postgres:///codes?host=/var/run/postgresql&port=1337&user=skid
+      - DB_URL=postgres:///codes?host=/var/run/postgresql&user=skid
       - HTTP_ADDR=/tmp/unix.sock
       - HTTP_NETWORK=unix
     command: go run main.go
