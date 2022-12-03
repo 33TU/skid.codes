@@ -6,20 +6,42 @@ import (
 	m "backend/middleware"
 	s "backend/services"
 	"log"
+	"net"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"golang.org/x/sys/unix"
 )
 
 var (
+	// HTTP addr and network
+	addr    string
+	network string
+
 	// Internal fiber.App
 	app *fiber.App
 )
 
 // init setup middlewares and routes.
 func init() {
-	app = fiber.New()
+	var ok bool
+
+	addr, ok = config.Get("HTTP_ADDR")
+	if !ok {
+		log.Fatalln("HTTP_ADDR env not found.")
+	}
+
+	network, ok = config.Get("HTTP_NETWORK")
+	if !ok {
+		log.Fatalln("HTTP_NETWORK env not found.")
+	}
+
+	// Internal fiber app
+	app = fiber.New(fiber.Config{
+		Network: network,
+	})
 
 	// Middlewares
 	app.Use(cors.New())
@@ -62,10 +84,24 @@ func init() {
 
 // Start starts listening for connections.
 func Start() {
-	addr, ok := config.Get("HTTP_ADDR")
-	if !ok {
-		log.Fatalln("HTTP_ADDR env not found.")
-	}
+	if network == "unix" {
+		// Remove old unix socket
+		os.Remove(addr)
 
-	log.Fatalln(app.Listen(addr))
+		// Set unix mask for permissions so we can share the unix socket.
+		old := unix.Umask(0)
+		listener, err := net.Listen("unix", addr)
+		unix.Umask(old)
+
+		// Check if error
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		// Start listening
+		log.Fatalln(app.Listener(listener))
+	} else {
+		// Start with tcp network
+		log.Fatalln(app.Listen(addr))
+	}
 }
