@@ -65,12 +65,18 @@ type CreateUserResult struct {
 }
 
 // GetUser gets user based on parameters.
-func GetUser(username string) (*GetUserResult, error) {
-	return database.SelectOne[GetUserResult](
+func GetUser(username string) (res *GetUserResult, err error) {
+	res, err = database.SelectOne[GetUserResult](
 		getUserTimeout,
 		database.QueryUserGet,
 		username,
 	)
+
+	if err == pgx.ErrNoRows {
+		err = ErrNotFound
+	}
+
+	return
 }
 
 // FindPaste finds user based on parameters.
