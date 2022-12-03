@@ -92,7 +92,7 @@ type FetchPasteResult struct {
 type FindPasteResult struct {
 	ID       string    `json:"id"`
 	UID      int       `json:"uid"`
-	Count    int       `json:"count"`
+	Count    int       `json:"-"`
 	Title    *string   `json:"title"`
 	Content  *string   `json:"content"`
 	Created  time.Time `json:"created"`
