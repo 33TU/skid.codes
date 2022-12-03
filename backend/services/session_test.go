@@ -31,11 +31,11 @@ func TestRevokeSession(t *testing.T) {
 
 	// Try to revoke
 	rev, err := services.RevokeSession(&services.RevokeSessionBody{
-		SessionId: res.SessionID,
+		SessionID: res.SessionID,
 	}, res)
 
 	// Check that all ok
 	assert.NoError(t, err)
-	assert.Equal(t, rev.Id, res.SessionID)
+	assert.Equal(t, rev.ID, res.SessionID)
 	assert.Equal(t, rev.Revoked, true)
 }

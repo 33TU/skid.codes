@@ -53,6 +53,7 @@ func Login(body *LoginBody, lookup *ip2location.IP2Locationrecord, ip string) (r
 
 	// Check if no results or err
 	if err == pgx.ErrNoRows {
+		err = ErrNotFound
 		return
 	} else if err != nil {
 		return

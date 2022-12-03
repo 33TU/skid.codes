@@ -24,12 +24,12 @@ var (
 )
 
 type FetchPasteBody struct {
-	Id       string  `json:"id" validate:"required"`
+	ID       string  `json:"id" validate:"required"`
 	Password *string `json:"password"`
 }
 
 type FindPasteBody struct {
-	UserId   *int    `json:"uid"`
+	UserID   *int    `json:"uid"`
 	Username *string `json:"username"`
 	Language *string `json:"language"`
 	Title    *string `json:"title"`
@@ -49,7 +49,7 @@ type FindPasteBody struct {
 }
 
 type UpdatePasteBody struct {
-	Id       string  `json:"id" validate:"required"`
+	ID       string  `json:"id" validate:"required"`
 	Language *string `json:"language"`
 	Title    *string `json:"title"`
 	Private  *bool   `json:"private"`
@@ -59,7 +59,7 @@ type UpdatePasteBody struct {
 }
 
 type DeletePasteBody struct {
-	Id string `json:"id" validate:"required"`
+	ID string `json:"id" validate:"required"`
 }
 
 type CreatePasteBody struct {
@@ -72,8 +72,8 @@ type CreatePasteBody struct {
 }
 
 type FetchPasteResult struct {
-	Id       string    `json:"id"`
-	Uid      int       `json:"uid"`
+	ID       string    `json:"id"`
+	UID      int       `json:"uid"`
 	Title    *string   `json:"title"`
 	Private  bool      `json:"private"`
 	Unlisted bool      `json:"unlisted"`
@@ -109,15 +109,15 @@ type FindPasteResult struct {
 }
 
 type UpdatePasteResult struct {
-	Id string `json:"id"`
+	ID string `json:"id"`
 }
 
 type DeletePasteResult struct {
-	Id string `json:"id"`
+	ID string `json:"id"`
 }
 
 type CreatePasteResult struct {
-	Id string `json:"id"`
+	ID string `json:"id"`
 }
 
 // FetchPaste fetches paste based on parameters. Caller is user id.
@@ -125,7 +125,7 @@ func FetchPaste(body *FetchPasteBody, caller *int) (res *FetchPasteResult, err e
 	res, err = database.SelectOne[FetchPasteResult](
 		fetchPasteTimeout,
 		database.QueryPasteFetch,
-		body.Id, caller, body.Password,
+		body.ID, caller, body.Password,
 	)
 
 	if err == pgx.ErrNoRows {
@@ -140,7 +140,7 @@ func FindPaste(body *FindPasteBody, caller *int) (res []*FindPasteResult, count 
 	res, err = database.Select[FindPasteResult](
 		findPasteTimeout,
 		database.QueryPasteFind,
-		body.UserId, body.Username, body.Language, body.Title, body.Password, body.Content,
+		body.UserID, body.Username, body.Language, body.Title, body.Password, body.Content,
 		body.CreatedBegin, body.CreatedEnd,
 		body.Private, body.Unlisted,
 		caller, // Caller user_id
@@ -170,7 +170,7 @@ func UpdatePaste(body *UpdatePasteBody, session *claims.AuthClaims) (res *Update
 	res, err = database.SelectOne[UpdatePasteResult](
 		updatePasteTimeout,
 		database.QueryPasteUpdate,
-		body.Id, session.UserID, body.Language, body.Title, body.Private, body.Unlisted, body.Password, body.Content,
+		body.ID, session.UserID, body.Language, body.Title, body.Private, body.Unlisted, body.Password, body.Content,
 	)
 
 	if err == pgx.ErrNoRows {
@@ -185,7 +185,7 @@ func DeletePaste(body *DeletePasteBody, session *claims.AuthClaims) (res *Delete
 	res, err = database.SelectOne[DeletePasteResult](
 		deletePasteTimeout,
 		database.QueryPasteDelete,
-		session.UserID, body.Id,
+		session.UserID, body.ID,
 	)
 
 	if err == pgx.ErrNoRows {

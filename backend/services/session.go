@@ -20,11 +20,11 @@ type FindSessionBody struct {
 }
 
 type RevokeSessionBody struct {
-	SessionId int `json:"sid"`
+	SessionID int `json:"sid"`
 }
 
 type FindSessionResult struct {
-	Id      int       `json:"id"`
+	ID      int       `json:"id"`
 	Country string    `json:"country"`
 	Created time.Time `json:"created"`
 	Updated time.Time `json:"updated"`
@@ -33,7 +33,7 @@ type FindSessionResult struct {
 }
 
 type RevokeSessionResult struct {
-	Id      int       `json:"id"`
+	ID      int       `json:"id"`
 	Country string    `json:"country"`
 	Created time.Time `json:"created"`
 	Updated time.Time `json:"updated"`
@@ -68,7 +68,7 @@ func RevokeSession(body *RevokeSessionBody, session *claims.AuthClaims) (res *Re
 	res, err = database.SelectOne[RevokeSessionResult](
 		revokeSessionTimeout,
 		database.QuerySessionRevoke,
-		session.UserID, body.SessionId,
+		session.UserID, body.SessionID,
 	)
 
 	if err == pgx.ErrNoRows {

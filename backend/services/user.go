@@ -34,7 +34,7 @@ type UpdateUserBody struct {
 }
 
 type GetUserResult struct {
-	Id       int        `json:"id"`
+	ID       int        `json:"id"`
 	Username string     `json:"username"`
 	Role     string     `json:"role"`
 	Pastes   int        `json:"pastes"`
@@ -42,7 +42,7 @@ type GetUserResult struct {
 }
 
 type FindUserResult struct {
-	Id       int        `json:"id"`
+	ID       int        `json:"id"`
 	Username string     `json:"username"`
 	Role     string     `json:"role"`
 	Pastes   int        `json:"pastes"`
@@ -51,14 +51,14 @@ type FindUserResult struct {
 }
 
 type UpdateUserResult struct {
-	Id       int    `json:"id"`
+	ID       int    `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Role     string `json:"role"`
 }
 
 type CreateUserResult struct {
-	Id       int    `json:"id"`
+	ID       int    `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Role     string `json:"role"`

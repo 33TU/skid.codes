@@ -33,6 +33,8 @@ func TestLogin(t *testing.T) {
 	res, _, _, err := getLogin()
 
 	assert.NoError(t, err)
+	assert.NotEqual(t, res.SessionID, 0)
+	assert.NotEqual(t, res.UserID, 0)
 	assert.Equal(t, res.Username, username)
 }
 

@@ -1,9 +1,11 @@
 package services
 
-import "errors"
+import (
+	"github.com/gofiber/fiber/v2"
+)
 
 var (
-	ErrNotFound = errors.New("not found")
+	ErrNotFound = fiber.ErrNotFound
 )
 
 /**

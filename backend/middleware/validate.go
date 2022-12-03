@@ -40,11 +40,11 @@ func Validate[T any]() fiber.Handler {
 		var body T
 
 		if err := ctx.BodyParser(&body); err != nil {
-			return err
+			return fiber.NewError(400, err.Error())
 		}
 
 		if err := structValidate(body); err != nil {
-			return err
+			return fiber.NewError(400, err.Error())
 		}
 
 		ctx.Locals("body", &body)
