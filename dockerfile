@@ -1,7 +1,6 @@
-FROM fedora:latest
+FROM clearlinux:base
 
-RUN dnf update -y
-RUN dnf install -y golang
+RUN swupd bundle-add go-basic
 
 RUN useradd -m user
 USER user
