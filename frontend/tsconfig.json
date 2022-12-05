@@ -60,5 +60,5 @@
         /* Advanced Options */
         "skipLibCheck": true                      /* Skip type checking of declaration files. */
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*", "declaration.d.ts"]
 }

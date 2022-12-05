@@ -3,6 +3,7 @@ package handler
 import (
 	"backend/claims"
 	"backend/services"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
@@ -48,4 +49,30 @@ func RefreshHandler(ctx *fiber.Ctx) error {
 		"res":  res,
 		"auth": auth,
 	})
+}
+
+// LogoutHandler revokes session.
+func LogoutHandler(ctx *fiber.Ctx) error {
+	session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.AuthClaims)
+
+	// Revoke session
+	res, err := services.RevokeSession(&services.RevokeSessionBody{
+		SessionID: session.SessionID,
+	}, session)
+
+	if err != nil {
+		return err
+	}
+
+	// Send expired cookie for refresh_token
+	ctx.Cookie(&fiber.Cookie{
+		Name:     "refresh_token",
+		Value:    "expired",
+		Expires:  time.Time{},
+		SameSite: "Strict",
+		Path:     "/api/auth/refresh",
+		HTTPOnly: true,
+	})
+
+	return ctx.JSON(res)
 }

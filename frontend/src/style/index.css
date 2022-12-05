@@ -1,12 +1,13 @@
-html, body {
+html,
+body {
 	height: 100%;
 	width: 100%;
 	padding: 0;
 	margin: 0;
-	background: #FAFAFA;
+	background: #181b1e;
 	font-family: 'Helvetica Neue', arial, sans-serif;
 	font-weight: 400;
-	color: #444;
+	color: #fffefe;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
@@ -17,4 +18,8 @@ html, body {
 
 #app {
 	height: 100%;
+}
+
+.vh-100 {
+	min-height: 100vh;
 }

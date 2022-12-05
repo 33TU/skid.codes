@@ -1,11 +1,17 @@
-import { h } from 'preact';
-import style from './style.css';
+import { h } from "preact";
+import { useContext } from "preact/hooks";
+import { AuthContext } from "../../context";
+import Code from "../../components/code";
 
-const Home = () => (
-	<div class={style.home}>
-		<h1>Home</h1>
-		<p>This is the Home component.</p>
-	</div>
-);
+const Paste = () => {
+  const { authState } = useContext(AuthContext);
 
-export default Home;
+  return (
+    <Code
+      content={process.env.PREACT_APP_START_MSG}
+      readonly={authState.authUser === undefined}
+    />
+  );
+};
+
+export default Paste;

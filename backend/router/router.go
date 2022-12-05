@@ -30,7 +30,7 @@ var (
 // Limiters
 var (
 	loginLimiter       = m.IPLimiter(10, time.Minute)
-	refreshLimiter     = m.RefreshLimiter(5, time.Minute)
+	refreshLimiter     = m.IPLimiter(10, time.Minute)
 	userCreateLimiter  = m.IPLimiter(1, time.Minute*5)
 	pasteCreateLimiter = m.IPLimiter(10, time.Minute)
 	pasteFetchLimiter  = m.IPLimiter(30, time.Minute)
@@ -78,8 +78,8 @@ func init() {
 	// Auth
 	auth := api.Group("/auth")
 	auth.Post("/login", loginLimiter, m.Validate[s.LoginBody](), h.LoginHandler)
-	auth.Use(m.Refresh()) // Protected paths
-	auth.Get("/refresh", refreshLimiter, h.RefreshHandler)
+	auth.Get("/refresh", m.Refresh(), refreshLimiter, h.RefreshHandler)
+	auth.Get("/logout", m.Auth(), userLimiter, h.LogoutHandler)
 
 	// User
 	user := api.Group("/user")

@@ -4,8 +4,8 @@ FROM clearlinux:base
 RUN swupd bundle-add go-basic
 
 # Copy backend to dest
-COPY backend/ /run/backend/
-WORKDIR /run/backend
+COPY backend/ /var/run/backend/
+WORKDIR /var/run/backend
 
 # Install go modules
 RUN go install

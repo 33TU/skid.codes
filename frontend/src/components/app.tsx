@@ -1,21 +1,32 @@
-import { h } from 'preact';
-import { Route, Router } from 'preact-router';
+import { h } from "preact";
+import { Route, Router } from "preact-router";
+import { useState } from "preact/hooks";
 
-import Header from './header';
+import Header from "./header";
+import Home from "../routes/home";
+import Paste from "../routes/paste";
 
-// Code-splitting is automated for `routes` directory
-import Home from '../routes/home';
-import Profile from '../routes/profile';
+import { AuthContext } from "../context";
 
-const App = () => (
-	<div id="app">
-        <Header />
-        <Router>
+const App = () => {
+  const [authState, setAuthState] = useState({});
+
+  return (
+    <AuthContext.Provider value={{ authState, setAuthState }}>
+      <div id="app">
+        <div class="container">
+          <Header />
+        </div>
+
+        <div class="container">
+          <Router>
             <Route path="/" component={Home} />
-            <Route path="/profile/" component={Profile} user="me" />
-            <Route path="/profile/:user" component={Profile} />
-        </Router>
-    </div>
-);
+            <Route path="/paste/:id" component={Paste} />
+          </Router>
+        </div>
+      </div>
+    </AuthContext.Provider>
+  );
+};
 
 export default App;

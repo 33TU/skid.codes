@@ -20,7 +20,7 @@ type FindSessionBody struct {
 }
 
 type RevokeSessionBody struct {
-	SessionID int `json:"sid"`
+	SessionID int `json:"sid" validate:"required"`
 }
 
 type FindSessionResult struct {

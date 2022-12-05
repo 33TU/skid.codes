@@ -26,7 +26,7 @@ services:
     volumes:
       - ./docker/database/unix.sock:/var/run/postgresql/
       - ./docker/backend/unix.sock:/tmp/
-      - ./backend:/run/backend/
+      - ./backend:/var/run/backend/
     environment:
       - DB_URL=postgres:///codes?host=/var/run/postgresql&user=skid
       - HTTP_ADDR=/tmp/unix.sock
