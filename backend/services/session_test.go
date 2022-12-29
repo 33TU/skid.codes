@@ -30,7 +30,7 @@ func TestRevokeSession(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Try to revoke
-	rev, err := services.RevokeSession(&services.RevokeSessionBody{
+	rev, _, err := services.RevokeSession(&services.RevokeSessionBody{
 		SessionID: res.SessionID,
 	}, res)
 

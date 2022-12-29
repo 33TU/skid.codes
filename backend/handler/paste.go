@@ -2,6 +2,7 @@ package handler
 
 import (
 	"backend/claims"
+	"backend/errors"
 	"backend/services"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,7 +15,7 @@ func FetchPasteHandler(ctx *fiber.Ctx) error {
 
 	res, err := services.FetchPaste(body, nil)
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	return ctx.JSON(res)
@@ -27,7 +28,7 @@ func FetchUserPasteHandler(ctx *fiber.Ctx) error {
 
 	res, err := services.FetchPaste(body, &session.UserID)
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	return ctx.JSON(res)
@@ -39,7 +40,7 @@ func FindPasteHandler(ctx *fiber.Ctx) error {
 
 	res, count, err := services.FindPaste(body, nil)
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	return ctx.JSON(fiber.Map{
@@ -56,7 +57,7 @@ func FindUserPasteHandler(ctx *fiber.Ctx) error {
 
 	res, count, err := services.FindPaste(body, &session.UserID)
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	return ctx.JSON(fiber.Map{
@@ -73,7 +74,7 @@ func UpdatePasteHandler(ctx *fiber.Ctx) error {
 
 	res, err := services.UpdatePaste(body, session)
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	return ctx.JSON(res)
@@ -86,7 +87,7 @@ func DeletePasteHandler(ctx *fiber.Ctx) error {
 
 	res, err := services.DeletePaste(body, session)
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	return ctx.JSON(res)
@@ -100,7 +101,7 @@ func CreatePasteHandler(ctx *fiber.Ctx) error {
 	res, err := services.CreatePaste(body, session)
 
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	return ctx.JSON(res)

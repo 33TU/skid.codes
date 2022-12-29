@@ -1,35 +1,17 @@
-import { Axios, AxiosRequestConfig } from "axios";
+import axiosStatic from "axios";
 
-// Base axios config
-const baseConfig: AxiosRequestConfig = {
-  baseURL: process.env.PREACT_APP_BASE_URL,
-  headers: {
-    "Content-Type": "application/json"
-  }
-};
+// Axios default export
+export const axios = axiosStatic;
 
 // Authorization token
 let authToken: string | undefined;
 
-/**
- * Axios for for API points which do not require auth_token.
- */
-export const baseAxios = new Axios(baseConfig);
-
-/**
- * Axios for for API points which require auth_token.
- */
-export const authAxios = new Axios(baseConfig);
+// Axios defaults
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 // Adds auth token to header.
-authAxios.interceptors.request.use((config) => {
-  Object.assign(config, baseConfig);
-
-  if (!authToken) {
-    throw new Error("not authorized");
-  }
-
-  if (config.headers) {
+axios.interceptors.request.use((config) => {
+  if (authToken && config.headers) {
     config.headers.Authorization = authToken;
   }
 

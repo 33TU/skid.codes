@@ -1,19 +1,37 @@
-.header {
-	background: #101011;
-	color: whitesmoke;
-	box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+.form-control-dark {
+    color: #fff;
+    background-color: var(--bs-dark);
+    border-color: var(--bs-gray);
 }
 
-.header img {
-	width: 50px;
-	height: 50px;
+.form-control-dark:focus {
+    color: #fff;
+    background-color: var(--bs-dark);
+    border-color: #fff;
+    box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .25);
 }
 
-.header span {
-	color: white;
-	padding-left: 10px;
+header {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
 }
 
-.btn {
-	margin-left: 0;
+header span {
+    color: white;
+    padding-left: 10px;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+
+    will-change: filter;
+    transition: filter .2s ease-out;
+}
+
+.logo:hover {
+    filter: drop-shadow(0 0 1em #646cffaa);
+}
+
+.logo.preact:hover {
+    filter: drop-shadow(0 0 1em #673ab8aa);
 }

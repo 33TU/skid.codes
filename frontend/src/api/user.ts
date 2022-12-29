@@ -1,4 +1,4 @@
-import { authAxios, baseAxios } from "../axios";
+import { axios } from "../axios";
 
 export interface User {
   id: number;
@@ -39,21 +39,19 @@ export interface UpdateUserResponse {
 /**
  * Gets user information.
  */
-export async function getUser(username: string): Promise<CreateUserResponse> {
-  const r = await baseAxios.get(`/api/user/${encodeURI(username)}`);
-  return JSON.parse(r.data);
+export function getUser(username: string): Promise<CreateUserResponse> {
+  return axios.get(`/api/user/${encodeURI(username)}`);
 }
 
 /**
  * Creates user account.
  */
-export async function createUser(req: {
+export function createUser(req: {
   username: string;
   email: string;
   password: string;
 }): Promise<CreateUserResponse> {
-  const r = await baseAxios.post("/api/user/create", JSON.stringify(req));
-  return JSON.parse(r.data);
+  return axios.post("/api/user/create", req);
 }
 
 /**
@@ -61,24 +59,22 @@ export async function createUser(req: {
  * Count is the limit of results.
  * Offset is the begin offset of search.
  */
-export async function findUser(req: {
+export function findUser(req: {
   username: string;
   count: number;
   offset?: number;
 }): Promise<CreateUserResponse> {
-  const r = await baseAxios.post("/api/user/find", JSON.stringify(req));
-  return JSON.parse(r.data);
+  return axios.post("/api/user/find", req);
 }
 
 /**
  * Updates user information.
  * Authorization required.
  */
-export async function updateUser(req: {
+export function updateUser(req: {
   username?: string;
   email?: string;
   password?: string;
 }): Promise<UpdateUserResponse> {
-  const r = await authAxios.post("/api/user/update", JSON.stringify(req));
-  return JSON.parse(r.data);
+  return axios.post("/api/user/update", req);
 }

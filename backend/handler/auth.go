@@ -2,8 +2,8 @@ package handler
 
 import (
 	"backend/claims"
+	"backend/errors"
 	"backend/services"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
@@ -18,7 +18,7 @@ func LoginHandler(ctx *fiber.Ctx) error {
 	// Login
 	res, auth, cookie, err := services.Login(body, lookup, ctx.IP())
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	// Set cookie
@@ -38,7 +38,7 @@ func RefreshHandler(ctx *fiber.Ctx) error {
 	// Refresh
 	res, auth, cookie, err := services.Refresh(session, ctx.IP())
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	// Set cookie
@@ -56,23 +56,16 @@ func LogoutHandler(ctx *fiber.Ctx) error {
 	session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.AuthClaims)
 
 	// Revoke session
-	res, err := services.RevokeSession(&services.RevokeSessionBody{
+	res, cookie, err := services.RevokeSession(&services.RevokeSessionBody{
 		SessionID: session.SessionID,
 	}, session)
 
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
-	// Send expired cookie for refresh_token
-	ctx.Cookie(&fiber.Cookie{
-		Name:     "refresh_token",
-		Value:    "expired",
-		Expires:  time.Time{},
-		SameSite: "Strict",
-		Path:     "/api/auth/refresh",
-		HTTPOnly: true,
-	})
+	// Set cookie
+	ctx.Cookie(cookie)
 
 	return ctx.JSON(res)
 }

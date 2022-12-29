@@ -3,7 +3,6 @@ package services
 import (
 	"backend/claims"
 	"backend/database"
-	"errors"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -17,10 +16,12 @@ const (
 )
 
 var (
-	ErrLoginInvalidCredentials = errors.New("missing credentials")
-	ErrRefreshNoPermission     = errors.New("no permission to refresh this token")
-	ErrRefreshTokenInvalid     = errors.New("invalid refresh token")
-	ErrRefreshTokenExpired     = errors.New("expired refresh token")
+	ErrLoginInvalidCredentials = fiber.NewError(400, "email or username missing")
+	ErrLoginNotFound           = fiber.NewError(404, "incorrect email, username or password")
+	ErrRefreshNoPermission     = fiber.NewError(400, "no permission to refresh this token")
+	ErrRefreshNotFound         = fiber.NewError(404, "can not refesh, session not found")
+	ErrRefreshTokenInvalid     = fiber.NewError(400, "invalid refresh token")
+	ErrRefreshTokenExpired     = fiber.NewError(400, "expired refresh token")
 )
 
 type LoginBody struct {
@@ -53,7 +54,7 @@ func Login(body *LoginBody, lookup *ip2location.IP2Locationrecord, ip string) (r
 
 	// Check if no results or err
 	if err == pgx.ErrNoRows {
-		err = ErrNotFound
+		err = ErrLoginNotFound
 		return
 	} else if err != nil {
 		return
@@ -75,6 +76,7 @@ func Login(body *LoginBody, lookup *ip2location.IP2Locationrecord, ip string) (r
 		SameSite: "Strict",
 		Path:     "/api/auth/refresh",
 		HTTPOnly: true,
+		Secure:   true,
 	}
 
 	// Return response
@@ -92,7 +94,7 @@ func Refresh(session *claims.RefreshClaims, ip string) (res *claims.AuthClaims, 
 
 	// Check if no results or err
 	if err == pgx.ErrNoRows {
-		err = ErrNotFound
+		err = ErrRefreshNotFound
 		return
 	} else if err != nil {
 		return
@@ -114,6 +116,7 @@ func Refresh(session *claims.RefreshClaims, ip string) (res *claims.AuthClaims, 
 		SameSite: "Strict",
 		Path:     "/api/auth/refresh",
 		HTTPOnly: true,
+		Secure:   true,
 	}
 
 	// Return response

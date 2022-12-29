@@ -10,11 +10,18 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
+// limitReached returns fiber error for limit reached
+func limitReached(ctx *fiber.Ctx) error {
+	return fiber.ErrTooManyRequests
+}
+
 // AuthLimiter limits by sender email.
-func AuthLimiter(max int, exp time.Duration) fiber.Handler {
+func AuthLimiter(max int, exp time.Duration, skipFailed bool) fiber.Handler {
 	return limiter.New(limiter.Config{
-		Max:        max,
-		Expiration: exp,
+		Max:                max,
+		Expiration:         exp,
+		LimitReached:       limitReached,
+		SkipFailedRequests: skipFailed,
 
 		KeyGenerator: func(ctx *fiber.Ctx) string {
 			session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.AuthClaims)
@@ -24,10 +31,12 @@ func AuthLimiter(max int, exp time.Duration) fiber.Handler {
 }
 
 // RefreshLimiter limits by sender id.
-func RefreshLimiter(max int, exp time.Duration) fiber.Handler {
+func RefreshLimiter(max int, exp time.Duration, skipFailed bool) fiber.Handler {
 	return limiter.New(limiter.Config{
-		Max:        max,
-		Expiration: exp,
+		Max:                max,
+		Expiration:         exp,
+		LimitReached:       limitReached,
+		SkipFailedRequests: skipFailed,
 
 		KeyGenerator: func(ctx *fiber.Ctx) string {
 			session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.RefreshClaims)
@@ -37,10 +46,12 @@ func RefreshLimiter(max int, exp time.Duration) fiber.Handler {
 }
 
 // IPLimiter limits by sender IP.
-func IPLimiter(max int, exp time.Duration) fiber.Handler {
+func IPLimiter(max int, exp time.Duration, skipFailed bool) fiber.Handler {
 	return limiter.New(limiter.Config{
-		Max:        max,
-		Expiration: exp,
+		Max:                max,
+		Expiration:         exp,
+		LimitReached:       limitReached,
+		SkipFailedRequests: skipFailed,
 
 		KeyGenerator: func(c *fiber.Ctx) string {
 			return c.IP()

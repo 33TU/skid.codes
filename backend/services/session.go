@@ -5,12 +5,17 @@ import (
 	"backend/database"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgx/v5"
 )
 
 const (
 	findSessionTimeout   = time.Second * 5
 	revokeSessionTimeout = time.Second * 5
+)
+
+var (
+	ErrSessionNotFound = fiber.NewError(404, "session not found")
 )
 
 type FindSessionBody struct {
@@ -64,7 +69,7 @@ func FindSession(body *FindSessionBody, session *claims.AuthClaims) (res []*Find
 }
 
 // RevokeSession revokes sessions from refreshing JWT-token.
-func RevokeSession(body *RevokeSessionBody, session *claims.AuthClaims) (res *RevokeSessionResult, err error) {
+func RevokeSession(body *RevokeSessionBody, session *claims.AuthClaims) (res *RevokeSessionResult, cookie *fiber.Cookie, err error) {
 	res, err = database.SelectOne[RevokeSessionResult](
 		revokeSessionTimeout,
 		database.QuerySessionRevoke,
@@ -72,10 +77,21 @@ func RevokeSession(body *RevokeSessionBody, session *claims.AuthClaims) (res *Re
 	)
 
 	if err == pgx.ErrNoRows {
-		err = ErrNotFound
+		err = ErrSessionNotFound
 		return
 	} else if err != nil {
 		return
+	}
+
+	// Set expired cookie for refresh_token
+	cookie = &fiber.Cookie{
+		Name:     "refresh_token",
+		Value:    "expired",
+		Expires:  time.Time{},
+		SameSite: "Strict",
+		Path:     "/api/auth/refresh",
+		HTTPOnly: true,
+		Secure:   true,
 	}
 
 	// Return result

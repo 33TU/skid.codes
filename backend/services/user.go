@@ -5,6 +5,8 @@ import (
 	"backend/database"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
+	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -13,6 +15,11 @@ const (
 	updateUserTimeout = time.Second * 5
 	createUserTimeout = time.Second * 10
 	findUserTimeout   = time.Second * 15
+)
+
+var (
+	ErrUserNotFound     = fiber.NewError(404, "user not found")
+	ErrUserAlreadyExist = fiber.NewError(400, "user or email aready exist")
 )
 
 type CreateUserBody struct {
@@ -73,7 +80,7 @@ func GetUser(username string) (res *GetUserResult, err error) {
 	)
 
 	if err == pgx.ErrNoRows {
-		err = ErrNotFound
+		err = ErrUserNotFound
 	}
 
 	return
@@ -111,7 +118,7 @@ func UpdateUser(body *UpdateUserBody, session *claims.AuthClaims) (res *UpdateUs
 	)
 
 	if err == pgx.ErrNoRows {
-		err = ErrNotFound
+		err = ErrUserNotFound
 	}
 
 	return
@@ -126,7 +133,11 @@ func CreateUser(body *CreateUserBody) (res *CreateUserResult, err error) {
 	)
 
 	if err == pgx.ErrNoRows {
-		err = ErrNotFound
+		err = ErrUserNotFound
+	}
+
+	if database.ErrorCodeEquals(err, pgerrcode.UniqueViolation) {
+		err = ErrUserAlreadyExist
 	}
 
 	return

@@ -14,7 +14,7 @@ var (
 )
 
 // Struct validates a structs exposed fields. If invalid error message is built.
-func structValidate(s interface{}) error {
+func structValidate[T any](s T) error {
 	err := validate.Struct(s)
 	if err == nil {
 		return nil
@@ -40,11 +40,13 @@ func Validate[T any]() fiber.Handler {
 		var body T
 
 		if err := ctx.BodyParser(&body); err != nil {
-			return fiber.NewError(400, err.Error())
+			ctx.Status(400)
+			return err
 		}
 
-		if err := structValidate(body); err != nil {
-			return fiber.NewError(400, err.Error())
+		if err := structValidate(&body); err != nil {
+			ctx.Status(400)
+			return err
 		}
 
 		ctx.Locals("body", &body)

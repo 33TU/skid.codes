@@ -2,6 +2,7 @@ package handler
 
 import (
 	"backend/claims"
+	"backend/errors"
 	"backend/services"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,7 +15,7 @@ func GetUserHandler(ctx *fiber.Ctx) error {
 
 	res, err := services.GetUser(username)
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	return ctx.JSON(res)
@@ -26,7 +27,7 @@ func FindUserHandler(ctx *fiber.Ctx) error {
 
 	res, count, err := services.FindUser(body)
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	// Return json
@@ -44,7 +45,7 @@ func UpdateUserHandler(ctx *fiber.Ctx) error {
 
 	res, err := services.UpdateUser(body, session)
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	return ctx.JSON(res)
@@ -56,7 +57,7 @@ func CreateUserHandler(ctx *fiber.Ctx) error {
 
 	res, err := services.CreateUser(body)
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	return ctx.JSON(res)

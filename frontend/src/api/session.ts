@@ -1,4 +1,4 @@
-import { authAxios } from "../axios";
+import { axios } from "../axios";
 
 export interface Session {
   id: number;
@@ -27,12 +27,11 @@ export interface RevokeSessionResult {
  * Returned order is by latest.
  * Authorization required.
  */
-export async function findSessions(req: {
+export function findSessions(req: {
   count: number;
   offset?: number;
 }): Promise<FindSessionResult> {
-  const r = await authAxios.post("/api/session/find", JSON.stringify(req));
-  return JSON.parse(r.data);
+  return axios.post("/api/session/find", req);
 }
 
 /**
@@ -40,9 +39,8 @@ export async function findSessions(req: {
  * Returned order is by latest.
  * Authorization required.
  */
-export async function revokeSession(req: {
+export function revokeSession(req: {
   id: string;
 }): Promise<RevokeSessionResult> {
-  const r = await authAxios.post("/api/session/revoke", JSON.stringify(req));
-  return JSON.parse(r.data);
+  return axios.post("/api/session/revoke", req);
 }

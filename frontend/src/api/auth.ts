@@ -1,16 +1,18 @@
-import { authAxios, baseAxios } from "../axios";
+import { axios } from "../axios";
 import { RevokeSessionResult } from "./session";
+
+export interface AuthResultSession {
+  sid: number;
+  uid: number;
+  username: string;
+  email: string;
+  role: string;
+  exp: number;
+}
 
 export interface AuthResult {
   auth: string;
-  res: {
-    sid: number;
-    uid: number;
-    username: string;
-    email: string;
-    role: string;
-    exp: number;
-  };
+  res: AuthResultSession;
 }
 
 export interface LoginRequestWithEmail {
@@ -29,9 +31,8 @@ export type LoginRequest = LoginRequestWithUsername | LoginRequestWithEmail;
  * Sends login request with credentials.
  * Returns auth token and user information.
  */
-export async function login(req: LoginRequest): Promise<AuthResult> {
-  const r = await baseAxios.post("/api/auth/login", JSON.stringify(req));
-  return JSON.parse(r.data);
+export function login(req: LoginRequest): Promise<AuthResult> {
+  return axios.post("/api/auth/login", req);
 }
 
 /**
@@ -39,16 +40,14 @@ export async function login(req: LoginRequest): Promise<AuthResult> {
  * NOTE: the refresh_token is always stores as httponly cookie.
  *  Returns auth token and user information.
  */
-export async function refresh(): Promise<AuthResult> {
-  const r = await baseAxios.get("/api/auth/refresh");
-  return JSON.parse(r.data);
+export function refresh(): Promise<AuthResult> {
+  return axios.get("/api/auth/refresh");
 }
 
 /**
  * Logout and revoke current session.
  * Returns revoked session.
  */
-export async function logout(): Promise<RevokeSessionResult> {
-  const r = await authAxios.get("/api/auth/logout");
-  return JSON.parse(r.data);
+export function logout(): Promise<RevokeSessionResult> {
+  return axios.get("/api/auth/logout");
 }

@@ -3,11 +3,13 @@ package database
 import (
 	"backend/config"
 	"context"
+	"errors"
 	"log"
 	"time"
 
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -77,4 +79,20 @@ func QueryRow[T any](timeout time.Duration, query string, args ...interface{}) (
 	}
 
 	return nil, err
+}
+
+// GetError tries to get pgconn.PgError from err
+func GetError(err error) *pgconn.PgError {
+	var pgErr *pgconn.PgError
+	errors.As(err, &pgErr)
+	return pgErr
+}
+
+// ErrorCodeEquals tries to check if error is pg.error and matches code.
+func ErrorCodeEquals(err error, code string) bool {
+	if pgErr := GetError(err); pgErr != nil {
+		return pgErr.Code == code
+	}
+
+	return false
 }

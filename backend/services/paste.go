@@ -3,9 +3,9 @@ package services
 import (
 	"backend/claims"
 	"backend/database"
-	"errors"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -18,9 +18,9 @@ const (
 )
 
 var (
-	ErrPasteNotFound        = errors.New("paste not found")
-	ErrPasteCreate          = errors.New("failed to create paste")
-	ErrPasteUpdateNoContent = errors.New("password can not be set without content")
+	ErrPasteNotFound        = fiber.NewError(404, "paste not found")
+	ErrPasteCreate          = fiber.NewError(400, "failed to create paste")
+	ErrPasteUpdateNoContent = fiber.NewError(400, "password can not be set without content")
 )
 
 type FetchPasteBody struct {

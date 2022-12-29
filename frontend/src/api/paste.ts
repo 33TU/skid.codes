@@ -1,4 +1,4 @@
-import { authAxios, authorized, baseAxios } from "../axios";
+import { authorized, axios } from "../axios";
 
 export interface Language {
   ext: string[];
@@ -55,14 +55,12 @@ export interface DeletePasteResult {
  * Pastes with password will return null content on wrong password.
  * Authorization is required for private pastes.
  */
-export async function fetchPaste(req: {
+export function fetchPaste(req: {
   id: string;
   password?: string;
 }): Promise<FetchPasteResult> {
-  const axios = authorized() ? authAxios : baseAxios;
-  const path = authorized() ? "/api/paste/ufetch" : "/api/paste/fetch"
-  const r = await axios.post(path, JSON.stringify(req));
-  return JSON.parse(r.data);
+  const path = authorized() ? "/api/paste/ufetch" : "/api/paste/fetch";
+  return axios.post(path, req);
 }
 
 /**
@@ -70,7 +68,7 @@ export async function fetchPaste(req: {
  * Returned order is by latest.
  * Authorization is required for private pastes.
  */
-export async function findPaste(req: {
+export function findPaste(req: {
   uid?: number;
   username?: string;
   language?: string;
@@ -84,17 +82,15 @@ export async function findPaste(req: {
   offset: number;
   count: number;
 }): Promise<FetchPasteResult> {
-  const axios = authorized() ? authAxios : baseAxios;
-  const path = authorized() ? "/api/paste/ufind" : "/api/paste/find"
-  const r = await axios.post(path, JSON.stringify(req));
-  return JSON.parse(r.data);
+  const path = authorized() ? "/api/paste/ufind" : "/api/paste/find";
+  return axios.post(path, req);
 }
 
 /**
  * Creates paste.
  * Authorization is required.
  */
-export async function createPaste(req: {
+export function createPaste(req: {
   language: string;
   content: string;
   title?: string;
@@ -102,15 +98,14 @@ export async function createPaste(req: {
   private: boolean;
   unlisted: boolean;
 }): Promise<CreatePasteResult> {
-  const r = await authAxios.post("/api/paste/create", JSON.stringify(req));
-  return JSON.parse(r.data);
+  return axios.post("/api/paste/create", req);
 }
 
 /**
  * Update paste.
  * Authorization is required.
  */
-export async function updatePaste(req: {
+export function updatePaste(req: {
   id: string;
   language?: string;
   content?: string;
@@ -119,17 +114,15 @@ export async function updatePaste(req: {
   private?: boolean;
   unlisted?: boolean;
 }): Promise<UpdatePasteResult> {
-  const r = await authAxios.post("/api/paste/update", JSON.stringify(req));
-  return JSON.parse(r.data);
+  return axios.post("/api/paste/update", req);
 }
 
 /**
  * Delete paste.
  * Authorization is required.
  */
-export async function deletePaste(req: {
+export function deletePaste(req: {
   id: string;
 }): Promise<DeletePasteResult> {
-  const r = await authAxios.post("/api/paste/delete", JSON.stringify(req));
-  return JSON.parse(r.data);
+  return axios.post("/api/paste/delete", req);
 }

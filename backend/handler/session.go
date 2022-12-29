@@ -2,6 +2,7 @@ package handler
 
 import (
 	"backend/claims"
+	"backend/errors"
 	"backend/services"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,7 +16,7 @@ func FindSessionHandler(ctx *fiber.Ctx) error {
 
 	res, count, err := services.FindSession(body, session)
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	// Return json
@@ -32,9 +33,9 @@ func RevokeSessionHandler(ctx *fiber.Ctx) error {
 	session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.AuthClaims)
 
 	// Revoke session
-	res, err := services.RevokeSession(body, session)
+	res, _, err := services.RevokeSession(body, session)
 	if err != nil {
-		return err
+		return errors.SendError(ctx, err)
 	}
 
 	// Return json
