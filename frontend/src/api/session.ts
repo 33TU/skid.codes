@@ -27,11 +27,12 @@ export interface RevokeSessionResult {
  * Returned order is by latest.
  * Authorization required.
  */
-export function findSessions(req: {
+export async function findSessions(req: {
   count: number;
   offset?: number;
 }): Promise<FindSessionResult> {
-  return axios.post("/api/session/find", req);
+  const res = await axios.post("/api/session/find", req);
+  return res.data;
 }
 
 /**
@@ -39,8 +40,9 @@ export function findSessions(req: {
  * Returned order is by latest.
  * Authorization required.
  */
-export function revokeSession(req: {
+export async function revokeSession(req: {
   id: string;
 }): Promise<RevokeSessionResult> {
-  return axios.post("/api/session/revoke", req);
+  const res = await axios.post("/api/session/revoke", req);
+  return res.data;
 }

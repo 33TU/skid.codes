@@ -55,12 +55,13 @@ export interface DeletePasteResult {
  * Pastes with password will return null content on wrong password.
  * Authorization is required for private pastes.
  */
-export function fetchPaste(req: {
+export async function fetchPaste(req: {
   id: string;
   password?: string;
 }): Promise<FetchPasteResult> {
   const path = authorized() ? "/api/paste/ufetch" : "/api/paste/fetch";
-  return axios.post(path, req);
+  const res = await axios.post(path, req);
+  return res.data;
 }
 
 /**
@@ -68,7 +69,7 @@ export function fetchPaste(req: {
  * Returned order is by latest.
  * Authorization is required for private pastes.
  */
-export function findPaste(req: {
+export async function findPaste(req: {
   uid?: number;
   username?: string;
   language?: string;
@@ -83,14 +84,15 @@ export function findPaste(req: {
   count: number;
 }): Promise<FetchPasteResult> {
   const path = authorized() ? "/api/paste/ufind" : "/api/paste/find";
-  return axios.post(path, req);
+  const res = await axios.post(path, req);
+  return res.data;
 }
 
 /**
  * Creates paste.
  * Authorization is required.
  */
-export function createPaste(req: {
+export async function createPaste(req: {
   language: string;
   content: string;
   title?: string;
@@ -98,14 +100,15 @@ export function createPaste(req: {
   private: boolean;
   unlisted: boolean;
 }): Promise<CreatePasteResult> {
-  return axios.post("/api/paste/create", req);
+  const res = await axios.post("/api/paste/create", req);
+  return res.data;
 }
 
 /**
  * Update paste.
  * Authorization is required.
  */
-export function updatePaste(req: {
+export async function updatePaste(req: {
   id: string;
   language?: string;
   content?: string;
@@ -114,15 +117,17 @@ export function updatePaste(req: {
   private?: boolean;
   unlisted?: boolean;
 }): Promise<UpdatePasteResult> {
-  return axios.post("/api/paste/update", req);
+  const res = await axios.post("/api/paste/update", req);
+  return res.data;
 }
 
 /**
  * Delete paste.
  * Authorization is required.
  */
-export function deletePaste(req: {
+export async function deletePaste(req: {
   id: string;
 }): Promise<DeletePasteResult> {
-  return axios.post("/api/paste/delete", req);
+  const res = await axios.post("/api/paste/delete", req);
+  return res.data;
 }

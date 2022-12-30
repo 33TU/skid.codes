@@ -1,7 +1,7 @@
 .body-signup {
     margin: 0 auto;
     max-width: 30rem;
-    padding-top: 6rem;
+    padding-top: 8rem;
 }
 
 .card-signup {
@@ -14,6 +14,11 @@
 
 .form-signup {
     margin: auto;
+}
+
+.alert-signup {
+    margin-top: -4rem;
+    min-width: 25rem;
 }
 
 .form-signup .checkbox {

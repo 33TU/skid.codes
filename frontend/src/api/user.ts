@@ -39,19 +39,21 @@ export interface UpdateUserResponse {
 /**
  * Gets user information.
  */
-export function getUser(username: string): Promise<CreateUserResponse> {
-  return axios.get(`/api/user/${encodeURI(username)}`);
+export async function getUser(username: string): Promise<CreateUserResponse> {
+  const res = await axios.get(`/api/user/${encodeURI(username)}`);
+  return res.data;
 }
 
 /**
  * Creates user account.
  */
-export function createUser(req: {
+export async function createUser(req: {
   username: string;
   email: string;
   password: string;
 }): Promise<CreateUserResponse> {
-  return axios.post("/api/user/create", req);
+  const res = await axios.post("/api/user/create", req);
+  return res.data;
 }
 
 /**
@@ -59,22 +61,24 @@ export function createUser(req: {
  * Count is the limit of results.
  * Offset is the begin offset of search.
  */
-export function findUser(req: {
+export async function findUser(req: {
   username: string;
   count: number;
   offset?: number;
 }): Promise<CreateUserResponse> {
-  return axios.post("/api/user/find", req);
+  const res = await axios.post("/api/user/find", req);
+  return res.data;
 }
 
 /**
  * Updates user information.
  * Authorization required.
  */
-export function updateUser(req: {
+export async function updateUser(req: {
   username?: string;
   email?: string;
   password?: string;
 }): Promise<UpdateUserResponse> {
-  return axios.post("/api/user/update", req);
+  const res = await axios.post("/api/user/update", req);
+  return res.data;
 }

@@ -5,20 +5,17 @@ go 1.19
 require (
 	github.com/georgysavva/scany/v2 v2.0.0
 	github.com/go-playground/validator/v10 v10.11.1
+	github.com/goccy/go-json v0.10.0
 	github.com/gofiber/fiber/v2 v2.40.1
 	github.com/gofiber/jwt/v3 v3.3.4
 	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/hashicorp/golang-lru/v2 v2.0.1
 	github.com/ip2location/ip2location-go/v9 v9.5.0
+	github.com/jackc/pgerrcode v0.0.0-20220416144525-469b46aa5efa
 	github.com/jackc/pgx/v5 v5.1.1
 	github.com/joho/godotenv v1.4.0
 	github.com/stretchr/testify v1.8.1
 	github.com/valyala/bytebufferpool v1.0.0
-)
-
-require (
-	github.com/goccy/go-json v0.10.0 // indirect
-	github.com/jackc/pgerrcode v0.0.0-20220416144525-469b46aa5efa // indirect
 )
 
 require (

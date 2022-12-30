@@ -1,4 +1,5 @@
 import { Route, Router } from "preact-router";
+import { refreshSession } from "./store/session";
 
 import Header from "./components/header";
 import Home from "./routes/home";
@@ -6,6 +7,8 @@ import Signin from "./routes/signin";
 import Signup from "./routes/signup";
 
 export function App() {
+  refreshSession();
+
   return (
     <div
       id="app"

@@ -4,7 +4,7 @@ import { useState } from "preact/hooks";
 import { login } from "../../api/auth";
 import { isApiError } from "../../api/error";
 import { setAuthToken } from "../../axios";
-import { authSession } from "../../store";
+import { authSession } from "../../store/session";
 
 import "./style.css";
 import Icon from "../../assets/icon.png";
@@ -36,22 +36,25 @@ export default () => {
 
   return (
     <div class="text-center body-signin">
-      <main class="form-signin">
-        {error
-          ? (
-            <div class="alert alert-danger alert-dismissible" role="alert">
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                onClick={() => setError("")}
-              >
-              </button>
-              <strong>{error}</strong>
-            </div>
-          )
-          : ""}
+      {error
+        ? (
+          <div
+            class="alert alert-signin alert-danger alert-dismissible position-fixed start-50 translate-middle"
+            role="alert"
+          >
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              onClick={() => setError("")}
+            >
+            </button>
+            <strong>{error}</strong>
+          </div>
+        )
+        : ""}
 
+      <main class="form-signin">
         <div class="card card-signin">
           <div class="card-body">
             <Link href="/">
