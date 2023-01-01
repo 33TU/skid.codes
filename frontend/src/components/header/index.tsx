@@ -28,10 +28,10 @@ export default () => {
         href="#"
         role="button"
         data-bs-toggle="dropdown"
-        aria-expanded="false"
+        aria-expanded="true"
       >
         <span>
-          Logged in as <strong>{authSession.value?.username}</strong>
+          <strong>{authSession.value?.username}</strong>
         </span>
       </a>
 
@@ -63,6 +63,15 @@ export default () => {
               <img class="logo" src={Icon} />
             </Link>
           </a>
+
+          <ul class="navbar-nav d-block d-lg-none d-xl-block d-xl-none">
+            {!authSession.value ? unauthElement : (
+              <span>
+                Logged in as <strong>{authSession.value?.username}</strong>
+              </span>
+            )}
+          </ul>
+
           <button
             class="navbar-toggler"
             type="button"
@@ -74,6 +83,7 @@ export default () => {
           >
             <span class="navbar-toggler-icon"></span>
           </button>
+
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
@@ -117,7 +127,13 @@ export default () => {
             </form>
 
             <ul class="navbar-nav">
-              {authSession.value ? authElement : unauthElement}
+              {authSession.value
+                ? authElement
+                : (
+                  <div class="d-none d-lg-block d-xl-block">
+                    {unauthElement}
+                  </div>
+                )}
             </ul>
           </div>
         </div>
