@@ -22,25 +22,25 @@ var (
 	ErrUserAlreadyExist = fiber.NewError(400, "user or email aready exist")
 )
 
-type CreateUserBody struct {
+type CreateUserRequest struct {
 	Username string `json:"username" validate:"required,min=1,max=32"`
 	Email    string `json:"email" validate:"required,email,min=6,max=255"`
 	Password string `json:"password" validate:"required,min=8"`
 }
 
-type FindUserBody struct {
+type FindUserRequest struct {
 	Username string `json:"username" validate:"required,min=1,max=32"`
 	Offset   int    `json:"offset" validate:"min=0"`
 	Count    int    `json:"count" validate:"required,min=1,max=100"`
 }
 
-type UpdateUserBody struct {
+type UpdateUserRequest struct {
 	Username *string `json:"username,omitempty" validate:"omitempty,min=1,max=32"`
 	Email    *string `json:"email,omitempty" validate:"omitempty,email,min=6,max=255"`
 	Password *string `json:"password,omitempty" validate:"omitempty,min=8"`
 }
 
-type GetUserResult struct {
+type GetUserResponse struct {
 	ID       int        `json:"id"`
 	Username string     `json:"username"`
 	Role     string     `json:"role"`
@@ -48,7 +48,7 @@ type GetUserResult struct {
 	Online   *time.Time `json:"online"`
 }
 
-type FindUserResult struct {
+type FindUserResponse struct {
 	ID       int        `json:"id"`
 	Username string     `json:"username"`
 	Role     string     `json:"role"`
@@ -57,14 +57,14 @@ type FindUserResult struct {
 	Count    int        `json:"-"`
 }
 
-type UpdateUserResult struct {
+type UpdateUserResponse struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Role     string `json:"role"`
 }
 
-type CreateUserResult struct {
+type CreateUserResponse struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
@@ -72,8 +72,8 @@ type CreateUserResult struct {
 }
 
 // GetUser gets user based on parameters.
-func GetUser(username string) (res *GetUserResult, err error) {
-	res, err = database.SelectOne[GetUserResult](
+func GetUser(username string) (res *GetUserResponse, err error) {
+	res, err = database.SelectOne[GetUserResponse](
 		getUserTimeout,
 		database.QueryUserGet,
 		username,
@@ -87,8 +87,8 @@ func GetUser(username string) (res *GetUserResult, err error) {
 }
 
 // FindPaste finds user based on parameters.
-func FindUser(body *FindUserBody) (res []*FindUserResult, count int, err error) {
-	res, err = database.Select[FindUserResult](
+func FindUser(body *FindUserRequest) (res []*FindUserResponse, count int, err error) {
+	res, err = database.Select[FindUserResponse](
 		findUserTimeout,
 		database.QueryUserFind,
 		body.Username, body.Offset, body.Count,
@@ -110,8 +110,8 @@ func FindUser(body *FindUserBody) (res []*FindUserResult, count int, err error) 
 }
 
 // UpdatePaste updates user's details.
-func UpdateUser(body *UpdateUserBody, session *claims.AuthClaims) (res *UpdateUserResult, err error) {
-	res, err = database.SelectOne[UpdateUserResult](
+func UpdateUser(body *UpdateUserRequest, session *claims.AuthClaims) (res *UpdateUserResponse, err error) {
+	res, err = database.SelectOne[UpdateUserResponse](
 		updateUserTimeout,
 		database.QueryUserUpdate,
 		session.UserID, body.Username, body.Email, body.Password,
@@ -125,8 +125,8 @@ func UpdateUser(body *UpdateUserBody, session *claims.AuthClaims) (res *UpdateUs
 }
 
 // CreatePaste creates new user.
-func CreateUser(body *CreateUserBody) (res *CreateUserResult, err error) {
-	res, err = database.SelectOne[CreateUserResult](
+func CreateUser(body *CreateUserRequest) (res *CreateUserResponse, err error) {
+	res, err = database.SelectOne[CreateUserResponse](
 		createUserTimeout,
 		database.QueryUserCreate,
 		body.Username, body.Email, body.Password,

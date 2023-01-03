@@ -23,12 +23,12 @@ var (
 	ErrPasteUpdateNoContent = fiber.NewError(400, "password can not be set without content")
 )
 
-type FetchPasteBody struct {
+type FetchPasteRequest struct {
 	ID       string  `json:"id" validate:"required"`
 	Password *string `json:"password"`
 }
 
-type FindPasteBody struct {
+type FindPasteRequest struct {
 	UserID   *int    `json:"uid"`
 	Username *string `json:"username"`
 	Language *string `json:"language"`
@@ -48,7 +48,7 @@ type FindPasteBody struct {
 	Count  int `json:"count" validate:"required,min=1,max=100"`
 }
 
-type UpdatePasteBody struct {
+type UpdatePasteRequest struct {
 	ID       string  `json:"id" validate:"required"`
 	Language *string `json:"language"`
 	Title    *string `json:"title"`
@@ -58,11 +58,11 @@ type UpdatePasteBody struct {
 	Content  *string `json:"content,omitempty"`
 }
 
-type DeletePasteBody struct {
+type DeletePasteRequest struct {
 	ID string `json:"id" validate:"required"`
 }
 
-type CreatePasteBody struct {
+type CreatePasteRequest struct {
 	Language string  `json:"language" validate:"required"`
 	Content  string  `json:"content" validate:"required"`
 	Title    *string `json:"title"`
@@ -71,7 +71,7 @@ type CreatePasteBody struct {
 	Unlisted bool    `json:"unlisted"`
 }
 
-type FetchPasteResult struct {
+type FetchPasteResponse struct {
 	ID       string    `json:"id"`
 	UID      int       `json:"uid"`
 	Title    *string   `json:"title"`
@@ -89,7 +89,7 @@ type FetchPasteResult struct {
 	} `json:"language"`
 }
 
-type FindPasteResult struct {
+type FindPasteResponse struct {
 	ID       string    `json:"id"`
 	UID      int       `json:"uid"`
 	Count    int       `json:"-"`
@@ -108,21 +108,21 @@ type FindPasteResult struct {
 	Username string `json:"username"`
 }
 
-type UpdatePasteResult struct {
+type UpdatePasteResponse struct {
 	ID string `json:"id"`
 }
 
-type DeletePasteResult struct {
+type DeletePasteResponse struct {
 	ID string `json:"id"`
 }
 
-type CreatePasteResult struct {
+type CreatePasteResponse struct {
 	ID string `json:"id"`
 }
 
 // FetchPaste fetches paste based on parameters. Caller is user id.
-func FetchPaste(body *FetchPasteBody, caller *int) (res *FetchPasteResult, err error) {
-	res, err = database.SelectOne[FetchPasteResult](
+func FetchPaste(body *FetchPasteRequest, caller *int) (res *FetchPasteResponse, err error) {
+	res, err = database.SelectOne[FetchPasteResponse](
 		fetchPasteTimeout,
 		database.QueryPasteFetch,
 		body.ID, caller, body.Password,
@@ -136,8 +136,8 @@ func FetchPaste(body *FetchPasteBody, caller *int) (res *FetchPasteResult, err e
 }
 
 // FindPaste finds paste based on parameters. Caller is user id.
-func FindPaste(body *FindPasteBody, caller *int) (res []*FindPasteResult, count int, err error) {
-	res, err = database.Select[FindPasteResult](
+func FindPaste(body *FindPasteRequest, caller *int) (res []*FindPasteResponse, count int, err error) {
+	res, err = database.Select[FindPasteResponse](
 		findPasteTimeout,
 		database.QueryPasteFind,
 		body.UserID, body.Username, body.Language, body.Title,
@@ -161,13 +161,13 @@ func FindPaste(body *FindPasteBody, caller *int) (res []*FindPasteResult, count 
 }
 
 // UpdatePaste updates paste's details.
-func UpdatePaste(body *UpdatePasteBody, session *claims.AuthClaims) (res *UpdatePasteResult, err error) {
+func UpdatePaste(body *UpdatePasteRequest, session *claims.AuthClaims) (res *UpdatePasteResponse, err error) {
 	if body.Password != nil && body.Content == nil {
 		err = ErrPasteUpdateNoContent
 		return
 	}
 
-	res, err = database.SelectOne[UpdatePasteResult](
+	res, err = database.SelectOne[UpdatePasteResponse](
 		updatePasteTimeout,
 		database.QueryPasteUpdate,
 		body.ID, session.UserID, body.Language, body.Title, body.Private, body.Unlisted, body.Password, body.Content,
@@ -181,8 +181,8 @@ func UpdatePaste(body *UpdatePasteBody, session *claims.AuthClaims) (res *Update
 }
 
 // DeletePaste deletes paste.
-func DeletePaste(body *DeletePasteBody, session *claims.AuthClaims) (res *DeletePasteResult, err error) {
-	res, err = database.SelectOne[DeletePasteResult](
+func DeletePaste(body *DeletePasteRequest, session *claims.AuthClaims) (res *DeletePasteResponse, err error) {
+	res, err = database.SelectOne[DeletePasteResponse](
 		deletePasteTimeout,
 		database.QueryPasteDelete,
 		session.UserID, body.ID,
@@ -196,8 +196,8 @@ func DeletePaste(body *DeletePasteBody, session *claims.AuthClaims) (res *Delete
 }
 
 // CreatePaste creates new paste.
-func CreatePaste(body *CreatePasteBody, session *claims.AuthClaims) (res *CreatePasteResult, err error) {
-	res, err = database.SelectOne[CreatePasteResult](
+func CreatePaste(body *CreatePasteRequest, session *claims.AuthClaims) (res *CreatePasteResponse, err error) {
+	res, err = database.SelectOne[CreatePasteResponse](
 		createPasteTimeout,
 		database.QueryPasteCreate,
 		session.UserID, body.Language, body.Title, body.Password, body.Private, body.Unlisted, body.Content,

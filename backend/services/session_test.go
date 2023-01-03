@@ -13,7 +13,7 @@ func TestFindSession(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Find all sessions for user:
-	sessions, count, err := services.FindSession(&services.FindSessionBody{
+	sessions, count, err := services.FindSession(&services.FindSessionRequest{
 		Offset: 0,
 		Count:  100,
 	}, res)
@@ -30,7 +30,7 @@ func TestRevokeSession(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Try to revoke
-	rev, _, err := services.RevokeSession(&services.RevokeSessionBody{
+	rev, _, err := services.RevokeSession(&services.RevokeSessionRequest{
 		SessionID: res.SessionID,
 	}, res)
 

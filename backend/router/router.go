@@ -83,34 +83,34 @@ func init() {
 
 	// Auth
 	auth := api.Group("/auth")
-	auth.Post("/login", loginLimiter, m.Validate[s.LoginBody](), h.LoginHandler)
+	auth.Post("/login", loginLimiter, m.Validate[s.LoginRequest](), h.LoginHandler)
 	auth.Get("/refresh", m.Refresh(), refreshLimiter, h.RefreshHandler)
 	auth.Get("/logout", m.Auth(), userLimiter, h.LogoutHandler)
 
 	// User
 	user := api.Group("/user")
 	user.Get("/:username", h.GetUserHandler)
-	user.Post("/create", userCreateLimiter, m.Validate[s.CreateUserBody](), h.CreateUserHandler)
-	user.Post("/find", m.Validate[s.FindUserBody](), h.FindUserHandler)
+	user.Post("/create", userCreateLimiter, m.Validate[s.CreateUserRequest](), h.CreateUserHandler)
+	user.Post("/find", m.Validate[s.FindUserRequest](), h.FindUserHandler)
 	user.Use(m.Auth(), userLimiter) // Protected paths
-	user.Post("/update", m.Validate[s.UpdateUserBody](), h.UpdateUserHandler)
+	user.Post("/update", m.Validate[s.UpdateUserRequest](), h.UpdateUserHandler)
 
 	// Paste
 	paste := api.Group("/paste")
-	paste.Post("/fetch", pasteFetchLimiter, m.Validate[s.FetchPasteBody](), h.FetchPasteHandler)
-	paste.Post("/find", pasteFindLimiter, m.Validate[s.FindPasteBody](), h.FindPasteHandler)
+	paste.Post("/fetch", pasteFetchLimiter, m.Validate[s.FetchPasteRequest](), h.FetchPasteHandler)
+	paste.Post("/find", pasteFindLimiter, m.Validate[s.FindPasteRequest](), h.FindPasteHandler)
 	paste.Use(m.Auth(), userLimiter) // Protected paths
-	paste.Post("/ufetch", m.Validate[s.FetchPasteBody](), h.FetchUserPasteHandler)
-	paste.Post("/ufind", m.Validate[s.FindPasteBody](), h.FindPasteHandler)
-	paste.Post("/create", pasteCreateLimiter, m.Validate[s.CreatePasteBody](), h.CreatePasteHandler)
-	paste.Post("/update", m.Validate[s.UpdatePasteBody](), h.UpdatePasteHandler)
-	paste.Post("/delete", m.Validate[s.DeletePasteBody](), h.DeletePasteHandler)
+	paste.Post("/ufetch", m.Validate[s.FetchPasteRequest](), h.FetchUserPasteHandler)
+	paste.Post("/ufind", m.Validate[s.FindPasteRequest](), h.FindPasteHandler)
+	paste.Post("/create", pasteCreateLimiter, m.Validate[s.CreatePasteRequest](), h.CreatePasteHandler)
+	paste.Post("/update", m.Validate[s.UpdatePasteRequest](), h.UpdatePasteHandler)
+	paste.Post("/delete", m.Validate[s.DeletePasteRequest](), h.DeletePasteHandler)
 
 	// Session
 	session := api.Group("/session")
 	session.Use(m.Auth(), userLimiter) // Protected paths
-	session.Post("/find", m.Validate[s.FindSessionBody](), h.FindSessionHandler)
-	session.Post("/revoke", m.Validate[s.RevokeSessionBody](), h.RevokeSessionHandler)
+	session.Post("/find", m.Validate[s.FindSessionRequest](), h.FindSessionHandler)
+	session.Post("/revoke", m.Validate[s.RevokeSessionRequest](), h.RevokeSessionHandler)
 }
 
 // Start starts listening for connections.

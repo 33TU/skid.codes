@@ -8,13 +8,13 @@ export interface Session {
   revoked: boolean;
 }
 
-export interface FindSessionResult {
+export interface FindSessionResponse {
   count: number;
   offset: number;
   sessions: Session[];
 }
 
-export interface RevokeSessionResult {
+export interface RevokeSessionResponse {
   id: number;
   country: string;
   created: Date;
@@ -30,7 +30,7 @@ export interface RevokeSessionResult {
 export async function findSessions(req: {
   count: number;
   offset?: number;
-}): Promise<FindSessionResult> {
+}): Promise<FindSessionResponse> {
   const res = await axios.post("/api/session/find", req);
   return res.data;
 }
@@ -42,7 +42,7 @@ export async function findSessions(req: {
  */
 export async function revokeSession(req: {
   id: string;
-}): Promise<RevokeSessionResult> {
+}): Promise<RevokeSessionResponse> {
   const res = await axios.post("/api/session/revoke", req);
   return res.data;
 }

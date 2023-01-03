@@ -12,7 +12,7 @@ import (
 
 // LoginHandler logins and creates session into db returning JWT token.
 func LoginHandler(ctx *fiber.Ctx) error {
-	body := ctx.Locals("body").(*services.LoginBody)
+	body := ctx.Locals("body").(*services.LoginRequest)
 	lookup := ctx.Locals("lookup").(*ip2location.IP2Locationrecord)
 
 	// Login
@@ -56,7 +56,7 @@ func LogoutHandler(ctx *fiber.Ctx) error {
 	session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.AuthClaims)
 
 	// Revoke session
-	res, cookie, err := services.RevokeSession(&services.RevokeSessionBody{
+	res, cookie, err := services.RevokeSession(&services.RevokeSessionRequest{
 		SessionID: session.SessionID,
 	}, session)
 

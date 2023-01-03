@@ -20,13 +20,13 @@ export interface Paste {
   username: string;
 }
 
-export interface FindPasteResult {
+export interface FindPasteResponse {
   count: number;
   offset: number;
   pastes: Paste[];
 }
 
-export interface FetchPasteResult {
+export interface FetchPasteResponse {
   id: string;
   uid: number;
   title: string | null;
@@ -38,15 +38,15 @@ export interface FetchPasteResult {
   language: Language;
 }
 
-export interface CreatePasteResult {
+export interface CreatePasteResponse {
   id: string;
 }
 
-export interface UpdatePasteResult {
+export interface UpdatePasteResponse {
   id: string;
 }
 
-export interface DeletePasteResult {
+export interface DeletePasteResponse {
   id: string;
 }
 
@@ -58,7 +58,7 @@ export interface DeletePasteResult {
 export async function fetchPaste(req: {
   id: string;
   password?: string;
-}): Promise<FetchPasteResult> {
+}): Promise<FetchPasteResponse> {
   const path = authorized() ? "/api/paste/ufetch" : "/api/paste/fetch";
   const res = await axios.post(path, req);
   return res.data;
@@ -82,7 +82,7 @@ export async function findPaste(req: {
   createdEnd?: boolean;
   offset: number;
   count: number;
-}): Promise<FetchPasteResult> {
+}): Promise<FetchPasteResponse> {
   const path = authorized() ? "/api/paste/ufind" : "/api/paste/find";
   const res = await axios.post(path, req);
   return res.data;
@@ -99,7 +99,7 @@ export async function createPaste(req: {
   password?: string;
   private: boolean;
   unlisted: boolean;
-}): Promise<CreatePasteResult> {
+}): Promise<CreatePasteResponse> {
   const res = await axios.post("/api/paste/create", req);
   return res.data;
 }
@@ -116,7 +116,7 @@ export async function updatePaste(req: {
   password?: string;
   private?: boolean;
   unlisted?: boolean;
-}): Promise<UpdatePasteResult> {
+}): Promise<UpdatePasteResponse> {
   const res = await axios.post("/api/paste/update", req);
   return res.data;
 }
@@ -127,7 +127,7 @@ export async function updatePaste(req: {
  */
 export async function deletePaste(req: {
   id: string;
-}): Promise<DeletePasteResult> {
+}): Promise<DeletePasteResponse> {
   const res = await axios.post("/api/paste/delete", req);
   return res.data;
 }

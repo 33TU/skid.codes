@@ -23,7 +23,7 @@ func GetUserHandler(ctx *fiber.Ctx) error {
 
 // FindPasteHandler finds user based on parameters.
 func FindUserHandler(ctx *fiber.Ctx) error {
-	body := ctx.Locals("body").(*services.FindUserBody)
+	body := ctx.Locals("body").(*services.FindUserRequest)
 
 	res, count, err := services.FindUser(body)
 	if err != nil {
@@ -40,7 +40,7 @@ func FindUserHandler(ctx *fiber.Ctx) error {
 
 // UpdatePasteHandler updates user's details.
 func UpdateUserHandler(ctx *fiber.Ctx) error {
-	body := ctx.Locals("body").(*services.UpdateUserBody)
+	body := ctx.Locals("body").(*services.UpdateUserRequest)
 	session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.AuthClaims)
 
 	res, err := services.UpdateUser(body, session)
@@ -53,7 +53,7 @@ func UpdateUserHandler(ctx *fiber.Ctx) error {
 
 // CreatePasteHandler creates new user.
 func CreateUserHandler(ctx *fiber.Ctx) error {
-	body := ctx.Locals("body").(*services.CreateUserBody)
+	body := ctx.Locals("body").(*services.CreateUserRequest)
 
 	res, err := services.CreateUser(body)
 	if err != nil {

@@ -1,8 +1,8 @@
 import { signal } from "@preact/signals";
-import { AuthResultSession, logout, refresh } from "../api/auth";
+import { AuthResponseSession, logout, refresh } from "../api/auth";
 import { clearAuthToken, setAuthToken } from "../axios";
 
-export const authSession = signal<AuthResultSession | undefined>(undefined);
+export const authSession = signal<AuthResponseSession | undefined>(undefined);
 
 export async function refreshSession(): Promise<void> {
   try {

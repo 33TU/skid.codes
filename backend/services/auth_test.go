@@ -22,7 +22,7 @@ const (
 func getLogin() (*claims.AuthClaims, string, *fiber.Cookie, error) {
 	ipGeo := &ip2location.IP2Locationrecord{}
 
-	return services.Login(&services.LoginBody{
+	return services.Login(&services.LoginRequest{
 		Username: username,
 		Password: password,
 		Email:    "",

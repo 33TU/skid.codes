@@ -11,7 +11,7 @@ import (
 
 // FetchUserPasteHandler fetches paste based on parameters.
 func FetchPasteHandler(ctx *fiber.Ctx) error {
-	body := ctx.Locals("body").(*services.FetchPasteBody)
+	body := ctx.Locals("body").(*services.FetchPasteRequest)
 
 	res, err := services.FetchPaste(body, nil)
 	if err != nil {
@@ -23,7 +23,7 @@ func FetchPasteHandler(ctx *fiber.Ctx) error {
 
 // FetchUserPasteHandler fetches paste based on parameters. Passes session user id as caller.
 func FetchUserPasteHandler(ctx *fiber.Ctx) error {
-	body := ctx.Locals("body").(*services.FetchPasteBody)
+	body := ctx.Locals("body").(*services.FetchPasteRequest)
 	session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.AuthClaims)
 
 	res, err := services.FetchPaste(body, &session.UserID)
@@ -36,7 +36,7 @@ func FetchUserPasteHandler(ctx *fiber.Ctx) error {
 
 // FindPasteHandler finds paste based on parameters.
 func FindPasteHandler(ctx *fiber.Ctx) error {
-	body := ctx.Locals("body").(*services.FindPasteBody)
+	body := ctx.Locals("body").(*services.FindPasteRequest)
 
 	res, count, err := services.FindPaste(body, nil)
 	if err != nil {
@@ -52,7 +52,7 @@ func FindPasteHandler(ctx *fiber.Ctx) error {
 
 // FindUserPasteHandler finds paste based on parameters. Passes session user id as caller.
 func FindUserPasteHandler(ctx *fiber.Ctx) error {
-	body := ctx.Locals("body").(*services.FindPasteBody)
+	body := ctx.Locals("body").(*services.FindPasteRequest)
 	session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.AuthClaims)
 
 	res, count, err := services.FindPaste(body, &session.UserID)
@@ -69,7 +69,7 @@ func FindUserPasteHandler(ctx *fiber.Ctx) error {
 
 // UpdatePasteHandler updates paste's details.
 func UpdatePasteHandler(ctx *fiber.Ctx) error {
-	body := ctx.Locals("body").(*services.UpdatePasteBody)
+	body := ctx.Locals("body").(*services.UpdatePasteRequest)
 	session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.AuthClaims)
 
 	res, err := services.UpdatePaste(body, session)
@@ -82,7 +82,7 @@ func UpdatePasteHandler(ctx *fiber.Ctx) error {
 
 // DeletePasteHandler deletes paste.
 func DeletePasteHandler(ctx *fiber.Ctx) error {
-	body := ctx.Locals("body").(*services.DeletePasteBody)
+	body := ctx.Locals("body").(*services.DeletePasteRequest)
 	session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.AuthClaims)
 
 	res, err := services.DeletePaste(body, session)
@@ -95,7 +95,7 @@ func DeletePasteHandler(ctx *fiber.Ctx) error {
 
 // CreatePasteHandler creates new paste.
 func CreatePasteHandler(ctx *fiber.Ctx) error {
-	body := ctx.Locals("body").(*services.CreatePasteBody)
+	body := ctx.Locals("body").(*services.CreatePasteRequest)
 	session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.AuthClaims)
 
 	res, err := services.CreatePaste(body, session)

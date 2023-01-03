@@ -18,17 +18,17 @@ var (
 	ErrSessionNotFound = fiber.NewError(404, "session not found")
 )
 
-type FindSessionBody struct {
+type FindSessionRequest struct {
 	Offset      int  `json:"offset" validate:"min=0"`
 	Count       int  `json:"count" validate:"required,min=1,max=100"`
 	ShowRevoked bool `json:"showRevoked"`
 }
 
-type RevokeSessionBody struct {
+type RevokeSessionRequest struct {
 	SessionID int `json:"sid" validate:"required"`
 }
 
-type FindSessionResult struct {
+type FindSessionResponse struct {
 	ID      int       `json:"id"`
 	Country string    `json:"country"`
 	Created time.Time `json:"created"`
@@ -37,7 +37,7 @@ type FindSessionResult struct {
 	Count   int       `json:"-"`
 }
 
-type RevokeSessionResult struct {
+type RevokeSessionResponse struct {
 	ID      int       `json:"id"`
 	Country string    `json:"country"`
 	Created time.Time `json:"created"`
@@ -46,8 +46,8 @@ type RevokeSessionResult struct {
 }
 
 // FindSession finds session based on parameters.
-func FindSession(body *FindSessionBody, session *claims.AuthClaims) (res []*FindSessionResult, count int, err error) {
-	res, err = database.Select[FindSessionResult](
+func FindSession(body *FindSessionRequest, session *claims.AuthClaims) (res []*FindSessionResponse, count int, err error) {
+	res, err = database.Select[FindSessionResponse](
 		findSessionTimeout,
 		database.QuerySessionFind,
 		session.UserID, body.ShowRevoked, body.Offset, body.Count,
@@ -69,8 +69,8 @@ func FindSession(body *FindSessionBody, session *claims.AuthClaims) (res []*Find
 }
 
 // RevokeSession revokes sessions from refreshing JWT-token.
-func RevokeSession(body *RevokeSessionBody, session *claims.AuthClaims) (res *RevokeSessionResult, cookie *fiber.Cookie, err error) {
-	res, err = database.SelectOne[RevokeSessionResult](
+func RevokeSession(body *RevokeSessionRequest, session *claims.AuthClaims) (res *RevokeSessionResponse, cookie *fiber.Cookie, err error) {
+	res, err = database.SelectOne[RevokeSessionResponse](
 		revokeSessionTimeout,
 		database.QuerySessionRevoke,
 		session.UserID, body.SessionID,

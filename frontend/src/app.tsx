@@ -11,19 +11,16 @@ export function App() {
 
   return (
     <div
-      id="app"
       data-bs-theme="dark"
-      class="container-fluid p-0 min-vh-100 text-body bg-body "
+      class="container-fluid p-0 text-body bg-body h-100"
     >
       <Header></Header>
 
-      <div class="container">
-        <Router>
-          <Route path="/" component={Home} />
-          <Route path="/signin" component={Signin} />
-          <Route path="/signup" component={Signup} />
-        </Router>
-      </div>
+      <Router>
+        <Route path="/" component={Home} />
+        <Route path="/signin" component={Signin} />
+        <Route path="/signup" component={Signup} />
+      </Router>
     </div>
   );
 }

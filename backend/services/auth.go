@@ -24,18 +24,18 @@ var (
 	ErrRefreshTokenExpired     = fiber.NewError(400, "expired refresh token")
 )
 
-type LoginBody struct {
+type LoginRequest struct {
 	Username string `json:"username,omitempty" validate:"omitempty,min=1,max=32"`
 	Email    string `json:"email,omitempty" validate:"omitempty,email,min=6,max=255"`
 	Password string `json:"password" validate:"required"`
 }
 
-type RefreshBody struct {
+type RefreshRequest struct {
 	Token string `json:"token" validate:"required"`
 }
 
 // LoginHandler logins and creates session into db returning JWT token.
-func Login(body *LoginBody, lookup *ip2location.IP2Locationrecord, ip string) (res *claims.AuthClaims, auth string, cookie *fiber.Cookie, err error) {
+func Login(body *LoginRequest, lookup *ip2location.IP2Locationrecord, ip string) (res *claims.AuthClaims, auth string, cookie *fiber.Cookie, err error) {
 	if body.Email == "" && body.Username == "" {
 		err = ErrLoginInvalidCredentials
 		return

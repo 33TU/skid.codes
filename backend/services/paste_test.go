@@ -20,7 +20,7 @@ func TestFetchPaste(t *testing.T) {
 	unlisted := true
 
 	// Create paste
-	cres, err := services.CreatePaste(&services.CreatePasteBody{
+	cres, err := services.CreatePaste(&services.CreatePasteRequest{
 		Language: "C",
 		Content:  content,
 		Title:    &title,
@@ -32,7 +32,7 @@ func TestFetchPaste(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Fetch the paste
-	fres, err := services.FetchPaste(&services.FetchPasteBody{
+	fres, err := services.FetchPaste(&services.FetchPasteRequest{
 		ID:       cres.ID,
 		Password: &password,
 	}, &res.UserID)
@@ -48,7 +48,7 @@ func TestFindPaste(t *testing.T) {
 	language := "C"
 
 	// Find a paste
-	res, count, err := services.FindPaste(&services.FindPasteBody{
+	res, count, err := services.FindPaste(&services.FindPasteRequest{
 		Language: &language,
 		Offset:   0,
 		Count:    1,
@@ -66,7 +66,7 @@ func TestUpdatePaste(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Find one paste
-	fres, count, err := services.FindPaste(&services.FindPasteBody{
+	fres, count, err := services.FindPaste(&services.FindPasteRequest{
 		UserID: &res.UserID,
 		Offset: 0,
 		Count:  1,
@@ -80,7 +80,7 @@ func TestUpdatePaste(t *testing.T) {
 	content := "int main() {}"
 	password := "password123"
 
-	ures, err := services.UpdatePaste(&services.UpdatePasteBody{
+	ures, err := services.UpdatePaste(&services.UpdatePasteRequest{
 		ID:       fres[0].ID,
 		Title:    &newTitle,
 		Content:  &content,
@@ -104,7 +104,7 @@ func TestCreatePaste(t *testing.T) {
 	unlisted := false
 
 	// Create paste
-	cres, err := services.CreatePaste(&services.CreatePasteBody{
+	cres, err := services.CreatePaste(&services.CreatePasteRequest{
 		Language: "C",
 		Content:  content,
 		Title:    &title,
@@ -123,7 +123,7 @@ func TestDeletePaste(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Find one paste
-	fres, count, err := services.FindPaste(&services.FindPasteBody{
+	fres, count, err := services.FindPaste(&services.FindPasteRequest{
 		UserID: &res.UserID,
 		Offset: 0,
 		Count:  1,
@@ -133,7 +133,7 @@ func TestDeletePaste(t *testing.T) {
 	assert.Greater(t, count, 0)
 
 	// Delete the paste
-	dres, err := services.DeletePaste(&services.DeletePasteBody{
+	dres, err := services.DeletePaste(&services.DeletePasteRequest{
 		ID: fres[0].ID,
 	}, res)
 

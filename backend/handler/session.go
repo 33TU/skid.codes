@@ -11,7 +11,7 @@ import (
 
 // FindSessionHandler finds session based on parameters.
 func FindSessionHandler(ctx *fiber.Ctx) error {
-	body := ctx.Locals("body").(*services.FindSessionBody)
+	body := ctx.Locals("body").(*services.FindSessionRequest)
 	session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.AuthClaims)
 
 	res, count, err := services.FindSession(body, session)
@@ -29,7 +29,7 @@ func FindSessionHandler(ctx *fiber.Ctx) error {
 
 // RevokeSessionHandler revokes sessions from refreshing JWT-token.
 func RevokeSessionHandler(ctx *fiber.Ctx) error {
-	body := ctx.Locals("body").(*services.RevokeSessionBody)
+	body := ctx.Locals("body").(*services.RevokeSessionRequest)
 	session := ctx.Locals("auth").(*jwt.Token).Claims.(*claims.AuthClaims)
 
 	// Revoke session

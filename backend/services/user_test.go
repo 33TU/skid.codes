@@ -16,7 +16,7 @@ func TestGetUser(t *testing.T) {
 }
 
 func TestFindUser(t *testing.T) {
-	res, count, err := services.FindUser(&services.FindUserBody{
+	res, count, err := services.FindUser(&services.FindUserRequest{
 		Username: "admin",
 		Offset:   0,
 		Count:    1,
@@ -34,7 +34,7 @@ func TestUpdateUser(t *testing.T) {
 
 	// Update user
 	email := fmt.Sprint("admin", rand.Intn(123), "@skid.codes")
-	ures, err := services.UpdateUser(&services.UpdateUserBody{
+	ures, err := services.UpdateUser(&services.UpdateUserRequest{
 		Email: &email,
 	}, res)
 
@@ -45,7 +45,7 @@ func TestUpdateUser(t *testing.T) {
 
 func TestCreateUser(t *testing.T) {
 	// Try recreating same account
-	res, err := services.CreateUser(&services.CreateUserBody{
+	res, err := services.CreateUser(&services.CreateUserRequest{
 		Username: username,
 		Email:    "admin@skid.tools",
 		Password: "dev12345",

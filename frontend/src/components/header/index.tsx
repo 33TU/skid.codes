@@ -12,11 +12,15 @@ export default () => {
         type="button"
         class="btn btn-outline-light me-2"
       >
-        Login
+        Sign in
       </Link>
 
-      <Link href="/signup" type="button" class="btn btn-primary">
-        Sign-up
+      <Link
+        href="/signup"
+        type="button"
+        class="btn btn-primary"
+      >
+        Sign up
       </Link>
     </div>
   );
@@ -56,9 +60,9 @@ export default () => {
 
   return (
     <header class="border-bottom">
-      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
         <div class="container">
-          <a class="navbar-brand" href="#">
+          <a class="navbar-brand">
             <Link class="navbar-brand" href="/">
               <img class="logo" src={Icon} />
             </Link>
@@ -76,15 +80,15 @@ export default () => {
             class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
+            data-bs-target="#navbarMain"
+            aria-controls="navbarMain"
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
             <span class="navbar-toggler-icon"></span>
           </button>
 
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div id="navbarMain" class="collapse navbar-collapse d-lg-block">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
                 <Link
@@ -100,9 +104,9 @@ export default () => {
                 <Link
                   class="nav-link"
                   activeClassName="nav-link active"
-                  href="/members"
+                  href="/pastes"
                 >
-                  Members
+                  Pastes
                 </Link>
               </li>
 
@@ -110,9 +114,9 @@ export default () => {
                 <Link
                   class="nav-link"
                   activeClassName="nav-link active"
-                  href="/pastes"
+                  href="/members"
                 >
-                  Pastes
+                  Members
                 </Link>
               </li>
             </ul>
